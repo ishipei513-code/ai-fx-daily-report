@@ -1,107 +1,157 @@
 import os
-from datetime import datetime
 import yfinance as yf
-from crewai import Agent, Task, Crew, Process
-from langchain_google_genai import ChatGoogleGenerativeAI
+from datetime import datetime
+from crewai import Agent, Task, Crew
+from dotenv import load_dotenv
 
-# 1. データの取得（修正版）
-def get_market_data():
-    # multi_level_index=False を追加することで、データを扱いやすい単純な形式にします
-    data = yf.download("JPY=X", period="5d", interval="1d", multi_level_index=False)
-    latest = data.iloc[-1]
-    prev = data.iloc[-2]
-    return latest, prev
+# 1. 設定読み込み
+load_dotenv()
+os.environ["GEMINI_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 
-latest, prev = get_market_data()
+# 2. 【強化版】データの取得（過去5日分を取得してトレンドを見させる）
+print("--- 📊 市場データを取得中... ---")
+try:
+    ticker = "JPY=X"
+    data = yf.Ticker(ticker)
+    # 過去5日分のデータを取得
+    hist = data.history(period="5d")
+    
+    # AIに渡すためのデータテキストを作成
+    latest = hist.iloc[-1]
+    last_close = hist.iloc[-2]['Close'] # 前日終値
+    change = latest['Close'] - last_close # 前日比
+    
+    market_data = f"""
+    【対象通貨ペア】USD/JPY (ドル円)
+    【現在日時】{datetime.now().strftime("%Y-%m-%d %H:%M")}
+    【現在レート】{latest['Close']:.3f} 円
+    【前日終値】{last_close:.3f} 円
+    【前日比】{change:+.3f} 円
+    【本日の始値】{latest['Open']:.3f} 円
+    【本日の高値】{latest['High']:.3f} 円
+    【本日の安値】{latest['Low']:.3f} 円
+    
+    【直近5日間の終値推移】
+    {hist['Close'].to_string()}
+    """
+    print(market_data)
 
-# 2. AIモデルの設定 (Gemini)
-llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-flash",
-    google_api_key=os.getenv("GOOGLE_API_KEY")
-)
+except Exception as e:
+    print(f"データ取得エラー: {e}")
+    market_data = "データ取得失敗"
 
-# 3. エージェントの定義
+# 3. エージェント作成（SEOのプロ人格）
 analyst = Agent(
-    role='シニアFXアナリスト',
-    goal='テクニカル分析に基づき、正確で利益につながるドル円相場予測を提供する',
-    backstory='あなたは20年の経験を持つプロのFXトレーダーです。RSI、移動平均線、ボリンジャーバンドなどの指標を使いこなします。',
-    llm=llm,
-    allow_delegation=False
+    role='FX専属のSEOライター兼テクニカルアナリスト',
+    goal='読者の信頼を獲得し、検索上位表示を狙える質の高い市況記事を書くこと',
+    backstory="""
+    あなたは大手金融メディアで活躍するプロの相場解説者です。
+    「事実に基づいた正確な分析」と「初心者にもわかりやすい解説」で定評があります。
+    読者が「次にどう動けばいいか」具体的なシナリオを提示するのが得意です。
+    煽り文句は使わず、冷静で論理的なトーン（です・ます調）で執筆します。
+    """,
+    verbose=True,
+    llm="gemini/gemini-flash-latest"
 )
 
-# 4. タスクの定義（★SEO強化命令を組み込み済み）
+# 4. タスク作成（SEOテンプレートへの流し込み）
 report_task = Task(
     description=f"""
-    以下の為替データ（ドル円）を分析し、日本の個人投資家向けにブログ記事を作成してください。
-    
-    【為替データ】
-    - 現在のレート: {latest['Close']:.2f}円
-    - 前日比: {latest['Close'] - prev['Close']:.2f}円
-    - 当日の高値: {latest['High']:.2f}円
-    - 当日の安値: {latest['Low']:.2f}円
+    以下の市場データに基づき、個人投資家が「今すぐトレードしたくなる」ブログ記事を作成してください。
 
-    【SEO・記事構成ルール】
-    1. 読者がクリックしたくなる専門的なタイトルを付けてください。
-    2. 見出し（##）には「ドル円」「予想」「今後の見通し」というキーワードを必ず自然に含めてください。
-    3. 「今日のポイント（3行要約）」を冒頭に入れてください。
-    4. 具体的な数値（サポート・レジスタンスライン）を挙げてください。
-    5. 日本語で、親しみやすくも専門的なトーンで執筆してください。
+    --- 市場データ ---
+    {market_data}
+    -----------------
+
+    【記事の構成ルール（Markdown形式）】
+    
+    # 【{datetime.now().strftime("%m/%d")} ドル円予想】(ここに「急変」「爆益」「警戒」などの煽りワードを入れたタイトル)
+
+    ## 📉 今日のポイント（3行要約）
+    * (忙しい人のために結論をズバリ)
+    * (トレンドの方向性)
+    * (今日の注目イベント)
+
+    ## 📊 詳細テクニカル分析
+    現在のレートは **{latest['Close']:.2f}円** です。
+    (直近5日間の動きから、移動平均線やレジスタンスラインを意識したプロっぽい解説をする)
+
+    ## 🎯 今日のトレード戦略（ここに収益化への伏線を入れる）
+    * **買いシナリオ**: (具体的なエントリーポイント)
+    * **売りシナリオ**: (具体的な損切りライン)
+    * **プロのアドバイス**: 
+      「今日の相場は動きが早いので、約定力の高いFX会社を使うのが鉄則です。」
+      「初心者はスプレッドの狭い口座でコストを抑えるのが勝つコツです。」
+      といった、**口座開設が必要だと感じさせる一言**を必ず添えてください。
+
+    ## ⚠️ 注意すべき経済指標
+    (今日〜明日の注目イベントがあれば記載)
+
+    ---
     """,
-    expected_output="Markdown形式の高品質な相場分析レポート",
+    expected_output='Markdown形式のブログ記事',
     agent=analyst
 )
 
 # 5. 実行
+print("--- 🤖 SEO記事を執筆中... ---")
 crew = Crew(
     agents=[analyst],
     tasks=[report_task],
-    process=Process.sequential
+    verbose=True
 )
 
-result = crew.start()
+result = crew.kickoff()
 
-# 6. 保存（★SEO用メタ記述 + 資産積み上げモード）
+# 6. 保存（資産積み上げモード）
 
+# ▼▼▼ 新しい保存ロジック ▼▼▼
+
+# 1. 今日の日付を取得
 today_str = datetime.now().strftime("%Y-%m-%d")
 today_title = datetime.now().strftime("%Y/%m/%d")
 
-# 【SEO修正】検索結果に表示される紹介文（description）を自動生成
+# 2. Quartz用のメタデータ（SEO用のdescriptionを追加！）
 frontmatter = f"""---
 title: "{today_title} ドル円AI市場分析"
 date: {today_str}
-description: "【AI分析】{today_title}のドル円相場を徹底解説。最新レート {latest['Close']:.2f}円を踏まえたトレード戦略と、プロによる今後の見通しを公開中。"
+description: "【AI分析】今日（{today_title}）のドル円相場をプロレベルで徹底解説。最新レート {latest['Close']:.2f}円を踏まえたトレード戦略と今後の見通しをAIが提案します。"
 tags: ["USDJPY", "ドル円予想", "FX分析", "テクニカル分析"]
 ---
 
 """
 
-# 広告ブロック
+# 3. 広告ブロック（あなたのリンク入り）
 ad_block = """
 <br>
 
----
+## 📢 プロも愛用！おすすめFX口座リスト
 
-## 📢 初心者からプロまで選ぶFX口座
-
-FXを始めるなら、信頼性とツールの使いやすさが重要です。
+勝ちトレーダーになるためには、道具（口座）選びが命です。
 
 ### 🥇 DMM FX
-**スマホで最短1時間で取引開始！**
-* 手数料が安く、初心者でも直感的に操作可能。
-* [👉 DMM FXの無料口座開設はこちら](あなたのリンク)
+**迷ったらコレ！国内口座数No.1の実力派。**
+* スマホアプリが直感的で使いやすい
+* 最短1時間で取引開始できる
+* [👉 DMM FXの口座開設はこちら](あなたのリンク)
 
 ### 🥈 GMOクリック証券
-**業界最安水準のスプレッド！**
-* 高機能チャートが無料で使い放題。
+**コストを極限まで抑えたい人へ。**
+* 業界最安水準のスプレッド
+* 高機能なチャートツールが無料
 * [👉 GMOクリック証券の詳細を見る](あなたのリンク)
 
-> ※本記事はAIによる市場分析であり、投資の最終決定はご自身の判断で行ってください。
+> ※本記事はAIによる市場分析です。投資の勧誘を目的としたものではありません。
 """
 
+# 4. 全部合体！（メタデータ + 記事 + 広告）
 final_content = frontmatter + str(result) + "\n\n" + ad_block
 
-# フォルダ作成と保存
+# 5. 日付ごとのファイル名で保存
+# 例: quartz/content/posts/2026-01-29-report.md
 save_path = f"quartz/content/posts/{today_str}-report.md"
+
+# フォルダがない場合に備えて自動作成
 os.makedirs("quartz/content/posts", exist_ok=True)
 
 with open(save_path, "w", encoding="utf-8") as f:
