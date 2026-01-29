@@ -4,9 +4,10 @@ import yfinance as yf
 from crewai import Agent, Task, Crew, Process
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-# 1. データの取得
+# 1. データの取得（修正版）
 def get_market_data():
-    data = yf.download("JPY=X", period="5d", interval="1d")
+    # multi_level_index=False を追加することで、データを扱いやすい単純な形式にします
+    data = yf.download("JPY=X", period="5d", interval="1d", multi_level_index=False)
     latest = data.iloc[-1]
     prev = data.iloc[-2]
     return latest, prev
