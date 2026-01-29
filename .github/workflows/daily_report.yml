@@ -1,26 +1,28 @@
-name: Daily FX Report AI
+name: Deploy FX Media
 
 on:
   schedule:
-    # 毎日 日本時間の朝7:00 (UTC 22:00) に実行
+    # 毎朝 7:00 (JST) = UTC 22:00
     - cron: '0 22 * * *'
-  # 手動実行ボタンを有効化
   workflow_dispatch:
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+permissions:
+  contents: write
 
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 1. PythonでAI記事を作成
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: |
           pip install yfinance crewai langchain-google-genai python-dotenv google-generativeai
 
@@ -29,12 +31,24 @@ jobs:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         run: python main.py
 
-      - name: Get Date
-        id: date
-        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
-
-      - name: Upload Report
-        uses: actions/upload-artifact@v4
+      # 2. Quartzでサイトを構築 (Build)
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          name: fx-report-${{ steps.date.outputs.date }}
-          path: report.md
+          node-version: '20'
+
+      - name: Install Quartz dependencies
+        working-directory: quartz
+        run: npm ci
+
+      - name: Build Quartz Site
+        working-directory: quartz
+        run: npx quartz build
+
+      # 3. GitHub Pagesに公開 (Deploy)
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./quartz/public
+          publish_branch: gh-pages
