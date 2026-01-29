@@ -8,15 +8,18 @@ import * as Plugin from "./quartz/plugins"
  */
 const config: QuartzConfig = {
   configuration: {
-    pageTitle: "Quartz 4",
+    // 【SEO修正】検索結果に表示されるサイト名を詳しくしました
+    pageTitle: "AI FX Daily Report | ドル円相場をAIが毎日分析",
     pageTitleSuffix: "",
     enableSPA: true,
     enablePopovers: true,
     analytics: {
       provider: "plausible",
     },
-    locale: "en-US",
-    baseUrl: "quartz.jzhao.xyz",
+    // 【SEO修正】英語(en-US)から日本語(ja-JP)に変更しました
+    locale: "ja-JP",
+    // 【重要】あなたのサイトの正しいURLを設定しました
+    baseUrl: "ishipei513-code.github.io/ai-fx-daily-report",
     ignorePatterns: ["private", "templates", ".obsidian"],
     defaultDateType: "modified",
     theme: {
@@ -88,7 +91,7 @@ const config: QuartzConfig = {
       Plugin.Static(),
       Plugin.Favicon(),
       Plugin.NotFoundPage(),
-      // Comment out CustomOgImages to speed up build time
+      // Open Graph画像（SNS共有時の画像）を有効化
       Plugin.CustomOgImages(),
     ],
   },
