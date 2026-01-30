@@ -1,15 +1,3 @@
-
-- `path: {{folder}}/posts` → postsフォルダのレポートだけ対象
-- `template: list` → リスト形式で表示
-- `sort: date` → 日付順（最新が上）
-- `limit: 5` → 最新5件だけ表示（Loadingを速くする）
-
-これでクエリが正しく動いて、Loading...が消えます。
-
-#### パターンB: 静的リストに置き換え（Loadingを完全に消す・おすすめ）
-動的クエリがどうしても遅い場合、**手動リスト**に置き換え（JavaScript不要）：
-
-```md
 ---
 title: AI FX Daily Report
 ---
@@ -21,7 +9,8 @@ title: AI FX Daily Report
 
 ## 最新の市場分析レポート
 
-- [2026/01/30 ドル円AI市場分析（夜間戦略）](./posts/2026-01-30-report)
-- [2026/01/29 ドル円AI市場分析](./posts/2026-01-29-report)
-
-※ 毎日自動で新しいレポートが追加されます。古いものはExplorerからご覧ください。
+```query
+path: posts
+template: list
+sort: date desc
+limit: 5
