@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
     <channel>
-      <title>Quartz 4</title>
-      <link>https://quartz.jzhao.xyz</link>
-      <description>Last 10 notes on Quartz 4</description>
+      <title>AI FX Daily Report</title>
+      <link>https://ishipei513-code.github.io/ai-fx-daily-report</link>
+      <description>最新の10件 on AI FX Daily Report</description>
       <generator>Quartz -- quartz.jzhao.xyz</generator>
       <item>
     <title>AI FX Daily Report</title>
-    <link>https://quartz.jzhao.xyz/</link>
-    <guid>https://quartz.jzhao.xyz/</guid>
-    <description><![CDATA[ 🤖 全自動AI FX分析メディアへようこそ ここでは、AIエージェントが毎朝7時に生成した「ドル円(USD/JPY)」の市場分析レポートを公開しています。 テクニカル分析に基づいた中立的な視点で、その日のトレード戦略を提案します。 📅 最新の市場分析レポート 👇 以下のリンクから、日付ごとの詳細レポートをご覧いただけます。 Loading…. ]]></description>
-    <pubDate>Fri, 30 Jan 2026 01:58:32 GMT</pubDate>
+    <link>https://ishipei513-code.github.io/ai-fx-daily-report/</link>
+    <guid>https://ishipei513-code.github.io/ai-fx-daily-report/</guid>
+    <description><![CDATA[ 全自動AI FX分析メディアへようこそ ここでは、AIエージェントが毎朝7時に生成したドル円(USD/JPY)の市場分析レポートを公開しています。 テクニカル分析に基づいた中立的な視点で、その日のトレード戦略を提案します。 最新の市場分析レポート path: posts template: list sort: date desc limit: 5. ]]></description>
+    <pubDate>Fri, 30 Jan 2026 02:55:51 GMT</pubDate>
   </item><item>
     <title>2026/01/30 ドル円AI市場分析（夜間戦略）</title>
-    <link>https://quartz.jzhao.xyz/posts/2026-01-30-report</link>
-    <guid>https://quartz.jzhao.xyz/posts/2026-01-30-report</guid>
-    <description><![CDATA[ 【AI分析】今日（2026/01/30）のドル円相場をプロレベルで徹底解説。最新レート 153.76円を踏まえたトレード戦略と今後の見通しをAIが提案します。 ]]></description>
+    <link>https://ishipei513-code.github.io/ai-fx-daily-report/posts/2026-01-30-report</link>
+    <guid>https://ishipei513-code.github.io/ai-fx-daily-report/posts/2026-01-30-report</guid>
+    <description><![CDATA[ 【AI分析】今日（2026/01/30）のドル円相場をプロレベルで徹底解説。最新レート 153.87円を踏まえたトレード戦略と今後の見通しをAIが提案します。 ]]></description>
     <pubDate>Fri, 30 Jan 2026 00:00:00 GMT</pubDate>
   </item><item>
     <title>2026/01/29 ドル円AI市場分析</title>
-    <link>https://quartz.jzhao.xyz/posts/2026-01-29-report</link>
-    <guid>https://quartz.jzhao.xyz/posts/2026-01-29-report</guid>
+    <link>https://ishipei513-code.github.io/ai-fx-daily-report/posts/2026-01-29-report</link>
+    <guid>https://ishipei513-code.github.io/ai-fx-daily-report/posts/2026-01-29-report</guid>
     <description><![CDATA[ 【01/29 ドル円予想】急落後の「153円台攻防」は買いサインか？警戒すべき重要レジスタンスライン 大手金融メディア専属テクニカルアナリストのXXXです。 本日のUSD/JPY相場は、前日までの大幅な下落トレンドが一服し、買い戻し優勢でスタートしました。現在、重要な節目である153円台を巡る攻防が激化しています。冷静な分析に基づき、今日の具体的なトレード戦略を解説します。 📉 今日のポイント（3行要約） 昨日の急落で一旦底を打った形となり、目先は153円台を維持できるかどうかが焦点です。 短期的なトレンドは買い戻し優勢ですが、中期的な下落圧力は残存しており、上値は重くなる可能性があります。... ]]></description>
     <pubDate>Thu, 29 Jan 2026 00:00:00 GMT</pubDate>
   </item>
