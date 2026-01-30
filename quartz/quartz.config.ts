@@ -1,17 +1,21 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
 
+/**
+ * Quartz 4 Configuration
+ * https://quartz.jzhao.xyz/configuration
+ */
 const config: QuartzConfig = {
   configuration: {
     pageTitle: "AI FX Daily Report",
     pageTitleSuffix: "",
-    enableSPA: false,                  // SPAオフで静的表示を強制（Loading...激減）
+    enableSPA: false,                  // SPAオフで静的表示を強制（Loading...対策）
     enablePopovers: true,
     analytics: {
       provider: "plausible",
     },
-    locale: "ja-JP",                   // 日本語対応
-    baseUrl: "ishipei513-code.github.io/ai-fx-daily-report",  // あなたのURL
+    locale: "ja-JP",
+    baseUrl: "ishipei513-code.github.io/ai-fx-daily-report",
     ignorePatterns: [],
     defaultDateType: "created",
     theme: {
@@ -60,7 +64,7 @@ const config: QuartzConfig = {
       Plugin.Description(),
       Plugin.Latex({ renderEngine: "katex" }),
     ],
-    filters: [],  // RemoveDraftsを完全にオフ（自動生成レポートが確実に表示）
+    filters: [],  // RemoveDraftsオフで自動生成レポートが確実に表示
     emitters: [
       Plugin.AliasRedirects(),
       Plugin.ComponentResources(),
@@ -68,9 +72,9 @@ const config: QuartzConfig = {
       Plugin.FolderPage(),
       Plugin.TagPage(),
       Plugin.ContentIndex({
-        enableSiteMap: true,
+        enableSiteMap: true,       // 正しいスペル（S大文字）
         enableRSS: true,
-        staticIndex: true,  // 静的インデックス生成を強制（Loading...対策の核心）
+        // staticIndex: true,      // 最新版では不要（または indexStrategy: "static" に置き換え可能）
       }),
       Plugin.Assets(),
       Plugin.Static(),
