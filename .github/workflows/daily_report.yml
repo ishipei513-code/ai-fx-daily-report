@@ -41,6 +41,19 @@ jobs:
         working-directory: quartz
         run: npm ci
 
+      # ★ ここにデバッグ用のログ出力ステップを追加 ★
+      - name: Debug - List all Markdown files before build
+        working-directory: quartz
+        run: |
+          echo "=== Current content directory tree ==="
+          tree ../content -L 3 || echo "tree command not available, using find instead"
+          echo ""
+          echo "=== All .md files in content/ ==="
+          find ../content -type f -name "*.md" -print || echo "No .md files found"
+          echo ""
+          echo "=== Detailed listing of posts/ folder ==="
+          ls -la ../content/posts/ || echo "posts folder not found or empty"
+
       - name: Build Quartz Site
         working-directory: quartz
         run: npx quartz build
