@@ -72,7 +72,7 @@ analyst = Agent(
     煽り文句は使わず、冷静で論理的なトーン（です・ます調）で執筆します。
     """,
     verbose=True,
-    llm="gemini-3-flash"  # 安定版に変更（flash-latestより推奨）
+    llm="gemini/gemini-3-flash"  # 安定版に変更（flash-latestより推奨）
 )
 
 # 5. タスク作成（SEOテンプレートへの流し込み）
