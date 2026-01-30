@@ -1,23 +1,19 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
 
-/**
- * Quartz 4 Configuration
- * https://quartz.jzhao.xyz/configuration
- */
 const config: QuartzConfig = {
   configuration: {
     pageTitle: "AI FX Daily Report",
     pageTitleSuffix: "",
-    enableSPA: false,                  // SPAオフ → 静的サイト化（Loading...対策）
+    enableSPA: false,                  // SPAオフで静的表示を強制（Loading...激減）
     enablePopovers: true,
     analytics: {
       provider: "plausible",
     },
-    locale: "ja-JP",                   // 日本語サイトなのでja-JPに変更（任意）
-    baseUrl: "ishipei513-code.github.io/ai-fx-daily-report",  // あなたのGitHub Pages URLに変更
-    ignorePatterns: [],                // 空にして全ファイルを対象に
-    defaultDateType: "created",        // 作成日を優先（レポートの日付に合う）
+    locale: "ja-JP",                   // 日本語対応
+    baseUrl: "ishipei513-code.github.io/ai-fx-daily-report",  // あなたのURL
+    ignorePatterns: [],
+    defaultDateType: "created",
     theme: {
       fontOrigin: "googleFonts",
       cdnCaching: true,
@@ -55,16 +51,8 @@ const config: QuartzConfig = {
   plugins: {
     transformers: [
       Plugin.FrontMatter(),
-      Plugin.CreatedModifiedDate({
-        priority: ["frontmatter", "git", "filesystem"],
-      }),
-      Plugin.SyntaxHighlighting({
-        theme: {
-          light: "github-light",
-          dark: "github-dark",
-        },
-        keepBackground: false,
-      }),
+      Plugin.CreatedModifiedDate({ priority: ["frontmatter", "git", "filesystem"] }),
+      Plugin.SyntaxHighlighting({ theme: { light: "github-light", dark: "github-dark" }, keepBackground: false }),
       Plugin.ObsidianFlavoredMarkdown({ enableInHtmlEmbed: false }),
       Plugin.GitHubFlavoredMarkdown(),
       Plugin.TableOfContents(),
@@ -72,7 +60,7 @@ const config: QuartzConfig = {
       Plugin.Description(),
       Plugin.Latex({ renderEngine: "katex" }),
     ],
-    filters: [],  // RemoveDraftsを削除 → 自動生成レポートが確実に公開される
+    filters: [],  // RemoveDraftsを完全にオフ（自動生成レポートが確実に表示）
     emitters: [
       Plugin.AliasRedirects(),
       Plugin.ComponentResources(),
@@ -82,13 +70,13 @@ const config: QuartzConfig = {
       Plugin.ContentIndex({
         enableSiteMap: true,
         enableRSS: true,
-        staticIndex: true,  // 静的インデックス生成 → Loading...対策強化
+        staticIndex: true,  // 静的インデックス生成を強制（Loading...対策の核心）
       }),
       Plugin.Assets(),
       Plugin.Static(),
       Plugin.Favicon(),
       Plugin.NotFoundPage(),
-      // Plugin.CustomOgImages(),  // ビルド高速化のためコメントアウト推奨
+      // Plugin.CustomOgImages(),  // ビルド高速化のためコメントアウト
     ],
   },
 }
