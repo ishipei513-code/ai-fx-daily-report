@@ -2,7 +2,7 @@ name: Deploy FX Media
 
 on:
   schedule:
-    # 毎朝 7:00 (JST)
+    # 毎朝 7:00 (JST) → UTC 22:00
     - cron: '0 22 * * *'
   workflow_dispatch:
 
@@ -12,6 +12,7 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -41,18 +42,21 @@ jobs:
         working-directory: quartz
         run: npm ci
 
-      # ★ ここにデバッグ用のログ出力ステップを追加 ★
+      # ★ デバッグ用: ビルド前にcontentフォルダの中身を確認
       - name: Debug - List all Markdown files before build
         working-directory: quartz
         run: |
-          echo "=== Current content directory tree ==="
-          tree ../content -L 3 || echo "tree command not available, using find instead"
+          echo "=== Current working directory ==="
+          pwd
+          echo ""
+          echo "=== List files in current directory ==="
+          ls -la
           echo ""
           echo "=== All .md files in content/ ==="
-          find ../content -type f -name "*.md" -print || echo "No .md files found"
+          find ./content -type f -name "*.md" -print || echo "No .md files found in ./content"
           echo ""
-          echo "=== Detailed listing of posts/ folder ==="
-          ls -la ../content/posts/ || echo "posts folder not found or empty"
+          echo "=== Detailed listing of content/posts/ ==="
+          ls -la ./content/posts/ || echo "./content/posts/ not found"
 
       - name: Build Quartz Site
         working-directory: quartz
