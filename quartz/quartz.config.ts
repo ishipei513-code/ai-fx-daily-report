@@ -3,22 +3,21 @@ import * as Plugin from "./quartz/plugins"
 
 /**
  * Quartz 4 Configuration
- *
- * See https://quartz.jzhao.xyz/configuration for more information.
+ * https://quartz.jzhao.xyz/configuration
  */
 const config: QuartzConfig = {
   configuration: {
-    pageTitle: "Quartz 4",
+    pageTitle: "AI FX Daily Report",
     pageTitleSuffix: "",
-    enableSPA: true,
+    enableSPA: false,                  // SPAオフ → 静的サイト化（Loading...対策）
     enablePopovers: true,
     analytics: {
       provider: "plausible",
     },
-    locale: "en-US",
-    baseUrl: "quartz.jzhao.xyz",
-    ignorePatterns: [],
-    defaultDateType: "modified",
+    locale: "ja-JP",                   // 日本語サイトなのでja-JPに変更（任意）
+    baseUrl: "ishipei513-code.github.io/ai-fx-daily-report",  // あなたのGitHub Pages URLに変更
+    ignorePatterns: [],                // 空にして全ファイルを対象に
+    defaultDateType: "created",        // 作成日を優先（レポートの日付に合う）
     theme: {
       fontOrigin: "googleFonts",
       cdnCaching: true,
@@ -73,7 +72,7 @@ const config: QuartzConfig = {
       Plugin.Description(),
       Plugin.Latex({ renderEngine: "katex" }),
     ],
-    filters: [Plugin.RemoveDrafts()],
+    filters: [],  // RemoveDraftsを削除 → 自動生成レポートが確実に公開される
     emitters: [
       Plugin.AliasRedirects(),
       Plugin.ComponentResources(),
@@ -83,13 +82,13 @@ const config: QuartzConfig = {
       Plugin.ContentIndex({
         enableSiteMap: true,
         enableRSS: true,
+        staticIndex: true,  // 静的インデックス生成 → Loading...対策強化
       }),
       Plugin.Assets(),
       Plugin.Static(),
       Plugin.Favicon(),
       Plugin.NotFoundPage(),
-      // Comment out CustomOgImages to speed up build time
-      Plugin.CustomOgImages(),
+      // Plugin.CustomOgImages(),  // ビルド高速化のためコメントアウト推奨
     ],
   },
 }
