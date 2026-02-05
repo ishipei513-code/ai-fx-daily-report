@@ -11,13 +11,10 @@ draft: false
 
 ---
 
-## 📋 レポート一覧
+## 📋 最新のレポート
 
-```query
-path: posts
-template: list
-sort: date desc
-```
+- [2026-01-30 ドル円AIテクニカル分析](./2026-01-30-report)
+- [2026-01-29 ドル円AIテクニカル分析](./2026-01-29-report)
 
 ---
 

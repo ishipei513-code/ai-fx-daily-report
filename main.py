@@ -181,3 +181,28 @@ print(f"ファイルサイズ: {os.path.getsize(save_path)} バイト")
 print("内容の先頭10行:")
 with open(save_path, "r", encoding="utf-8") as f:
     print("".join(f.readlines()[:10]))
+
+# 🔧 posts/index.md を自動更新（新しい記事をリストに追加）
+posts_index_path = "quartz/content/posts/index.md"
+if os.path.exists(posts_index_path):
+    with open(posts_index_path, "r", encoding="utf-8") as f:
+        posts_content = f.read()
+    
+    # 「最新のレポート」セクションを更新
+    new_link = f"- [{today_title} ドル円AIテクニカル分析](./{today_str}-report)"
+    
+    # 既存のリンク部分を新しいリンクに置き換え（最初の行のみ）
+    import re
+    posts_content_updated = re.sub(
+        r"## 📋 最新のレポート\n\n- \[.+?\]\(\./.+?-report\)",
+        f"## 📋 最新のレポート\n\n{new_link}",
+        posts_content,
+        count=1
+    )
+    
+    with open(posts_index_path, "w", encoding="utf-8") as f:
+        f.write(posts_content_updated)
+    
+    print(f"\n✅ posts/index.md を更新しました")
+else:
+    print(f"\n⚠️ posts/index.md が見つかりません")
