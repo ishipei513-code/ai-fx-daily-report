@@ -133,10 +133,10 @@ today_title = now_jst.strftime("%Y/%m/%d")
 
 # Quartz用のメタデータ（draft: false を明示）
 frontmatter = f"""---
-title: "{today_title} ドル円AI市場分析（{time_tag}）"
+title: "【{today_title}】ドル円予想｜AI市場分析＆テクニカル戦略 {time_tag}"
 date: {today_str}
-description: "【AI分析】今日（{today_title}）のドル円相場をプロレベルで徹底解説。最新レート {latest['Close']:.2f}円を踏まえたトレード戦略と今後の見通しをAIが提案します。"
-tags: ["USDJPY", "ドル円予想", "FX分析", "テクニカル分析"]
+description: "【AI自動生成】{today_title}のドル円(USD/JPY)テクニカル分析レポート。現在レート{latest['Close']:.2f}円から見たサポート・レジスタンス分析、トレード戦略（買い・売りシナリオ）、本日の注目経済指標を詳解。初心者向けに丁寧に解説。"
+tags: ["ドル円予想", "USD/JPY", "テクニカル分析", "FX分析レポート", "市場分析", "{time_tag}"]
 draft: false
 ---
 

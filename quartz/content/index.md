@@ -1,5 +1,7 @@
 ---
-title: AI FX Daily Report
+title: "AI FX Daily Report | ドル円予想・テクニカル分析"
+description: "毎朝7時に最新のドル円(USD/JPY)テクニカル分析をAIが自動生成。初心者向けの実用的なトレード戦略と経済指標予想。SEO対策済みで検索上位を狙う無料FX分析メディア。"
+tags: ["ドル円", "FX予想", "テクニカル分析", "USD/JPY", "AI分析"]
 ---
 
 # 🤖 毎日自動更新！AI FX市場分析レポート
