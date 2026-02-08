@@ -1,3 +1,67 @@
 @use "./base.scss";
+@use "./variables.scss" as *;
 
 // put your custom CSS here!
+
+// Glassmorphism / Neumorphism Card Style
+.popover-inner,
+.graph,
+.callout,
+article > ul > li {
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 8px;
+  padding: 1rem;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border-color: var(--secondary);
+  }
+}
+
+// Typography Enhancements
+h1, h2 {
+  position: relative;
+  padding-left: 0.75rem;
+  
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 80%;
+    width: 4px;
+    background: linear-gradient(to bottom, var(--secondary), var(--tertiary));
+    border-radius: 2px;
+  }
+}
+
+body {
+  line-height: 1.8; // Improved readability
+}
+
+// Page Transition
+main {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+// Sticky Header with Blur
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--light), transparent 20%);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--lightgray);
+  margin-bottom: 2rem;
+  padding: 1rem 0;
+}
