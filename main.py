@@ -1,11 +1,13 @@
 import os
-import yfinance as yf
-from datetime import datetime
-import pytz  # JST判定用に追加
-from crewai import Agent, Task, Crew
-from dotenv import load_dotenv
-import sys  # exit用
 import re
+import sys  # exit用
+from datetime import datetime
+
+import pytz  # JST判定用に追加
+import yfinance as yf
+from crewai import Agent, Crew, Task
+from dotenv import load_dotenv
+
 
 def main():
     # 1. 設定読み込み
