@@ -1,76 +1,64 @@
 import test, { describe } from "node:test"
-import * as assert from "node:assert"
+import assert from "node:assert"
 import { escapeHTML, unescapeHTML } from "./escape"
 
-describe("escape", () => {
-  describe("escapeHTML", () => {
-    test("should escape special characters", () => {
-      assert.strictEqual(escapeHTML("&"), "&amp;")
-      assert.strictEqual(escapeHTML("<"), "&lt;")
-      assert.strictEqual(escapeHTML(">"), "&gt;")
-      assert.strictEqual(escapeHTML('"'), "&quot;")
-      assert.strictEqual(escapeHTML("'"), "&#039;")
-    })
-
-    test("should handle strings without special characters", () => {
-      assert.strictEqual(escapeHTML("hello world"), "hello world")
-      assert.strictEqual(escapeHTML("1234567890"), "1234567890")
-    })
-
-    test("should handle mixed strings", () => {
-      assert.strictEqual(escapeHTML("Foo & Bar"), "Foo &amp; Bar")
-      assert.strictEqual(escapeHTML("1 < 2"), "1 &lt; 2")
-      assert.strictEqual(escapeHTML('He said "Hello"'), "He said &quot;Hello&quot;")
-    })
-
-    test("should handle empty string", () => {
-      assert.strictEqual(escapeHTML(""), "")
-    })
+describe("escapeHTML", () => {
+  test("escapes basic HTML characters", () => {
+    assert.strictEqual(escapeHTML("&"), "&amp;")
+    assert.strictEqual(escapeHTML("<"), "&lt;")
+    assert.strictEqual(escapeHTML(">"), "&gt;")
+    assert.strictEqual(escapeHTML('"'), "&quot;")
+    assert.strictEqual(escapeHTML("'"), "&#039;")
   })
 
-  describe("unescapeHTML", () => {
-    test("should unescape special characters", () => {
-      assert.strictEqual(unescapeHTML("&amp;"), "&")
-      assert.strictEqual(unescapeHTML("&lt;"), "<")
-      assert.strictEqual(unescapeHTML("&gt;"), ">")
-      assert.strictEqual(unescapeHTML("&quot;"), '"')
-      assert.strictEqual(unescapeHTML("&#039;"), "'")
-    })
-
-    test("should handle strings without special characters", () => {
-      assert.strictEqual(unescapeHTML("hello world"), "hello world")
-    })
-
-    test("should handle mixed strings", () => {
-      assert.strictEqual(unescapeHTML("Foo &amp; Bar"), "Foo & Bar")
-      assert.strictEqual(unescapeHTML("1 &lt; 2"), "1 < 2")
-    })
-
-    test("should handle empty string", () => {
-      assert.strictEqual(unescapeHTML(""), "")
-    })
+  test("does not modify alphanumeric strings", () => {
+    assert.strictEqual(escapeHTML("hello world"), "hello world")
+    assert.strictEqual(escapeHTML("1234567890"), "1234567890")
   })
 
-  describe("reversibility", () => {
-    test("should be reversible for single special characters", () => {
-      const chars = ["&", "<", ">", '"', "'"]
-      for (const char of chars) {
-        assert.strictEqual(unescapeHTML(escapeHTML(char)), char, `Failed for char: ${char}`)
-      }
-    })
+  test("handles mixed strings", () => {
+    assert.strictEqual(escapeHTML("<b>bold</b> & 'quoted'"), "&lt;b&gt;bold&lt;/b&gt; &amp; &#039;quoted&#039;")
+  })
 
-    test("should be reversible for mixed strings", () => {
-      const s = 'Foo & Bar < Baz > Quux " Quuz \''
-      assert.strictEqual(unescapeHTML(escapeHTML(s)), s)
-    })
+  test("handles empty string", () => {
+    assert.strictEqual(escapeHTML(""), "")
+  })
+})
 
-    test("should be reversible for problematic cases", () => {
-        // This case exposes the bug where &amp; is unescaped before &lt;
-        // escapeHTML("&lt;") -> "&amp;lt;"
-        // unescapeHTML("&amp;lt;") -> currently "&lt;" -> "<" (WRONG)
-        // correct: "&lt;"
-        const s = "&lt;"
-        assert.strictEqual(unescapeHTML(escapeHTML(s)), s, `Failed for string: ${s}`)
-    })
+describe("unescapeHTML", () => {
+  test("unescapes basic HTML entities", () => {
+    assert.strictEqual(unescapeHTML("&amp;"), "&")
+    assert.strictEqual(unescapeHTML("&lt;"), "<")
+    assert.strictEqual(unescapeHTML("&gt;"), ">")
+    assert.strictEqual(unescapeHTML("&quot;"), '"')
+    assert.strictEqual(unescapeHTML("&#039;"), "'")
+  })
+
+  test("does not modify alphanumeric strings", () => {
+    assert.strictEqual(unescapeHTML("hello world"), "hello world")
+  })
+
+  test("handles mixed strings", () => {
+    assert.strictEqual(unescapeHTML("&lt;b&gt;bold&lt;/b&gt; &amp; &#039;quoted&#039;"), "<b>bold</b> & 'quoted'")
+  })
+
+  test("handles empty string", () => {
+    assert.strictEqual(unescapeHTML(""), "")
+  })
+
+  test("reversibility check", () => {
+    const original = "<b>bold</b> & 'quoted'"
+    const escaped = escapeHTML(original)
+    const unescaped = unescapeHTML(escaped)
+    assert.strictEqual(unescaped, original)
+  })
+
+  test("reversibility check with specific problematic input", () => {
+    const original = "&lt;"
+    const escaped = escapeHTML(original) // "&amp;lt;"
+    const unescaped = unescapeHTML(escaped)
+    // Expected: "&lt;"
+    // Current (buggy): "<"
+    assert.strictEqual(unescaped, original, `Failed to reverse escapeHTML("${original}")`)
   })
 })
