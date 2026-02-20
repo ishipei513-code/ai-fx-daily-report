@@ -1,6 +1,3 @@
-import logging
-import sys
-import google.generativeai as genai
 import os
 
 import google.generativeai as genai
