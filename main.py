@@ -13,6 +13,12 @@ import logging
 
 def main():
     # 1. 設定読み込み
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        handlers=[logging.StreamHandler(sys.stdout)],
+        force=True
+    )
     load_dotenv()
     os.environ["GEMINI_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 
@@ -67,7 +73,7 @@ def main():
 
     except Exception as e:
         logging.error(f"データ取得エラー: {e}")
-        logging.info("記事生成を中断します。")
+        logging.error("記事生成を中断します。")
         return 1  # Actionsで失敗扱いにする
 
     # 4. エージェント作成（SEOのプロ人格）
