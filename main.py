@@ -57,7 +57,7 @@ try:
     print(market_data)
 
 except Exception as e:
-    print(f"データ取得エラー: {e}")
+    print(f"データ取得エラーが発生しました: {type(e).__name__}")
     print("記事生成を中断します。")
     sys.exit(1)  # Actionsで失敗扱いにする
 
