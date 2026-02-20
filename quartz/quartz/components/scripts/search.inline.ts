@@ -128,12 +128,20 @@ function highlight(searchTerm: string, text: string, trim?: boolean) {
     tokenizedText = tokenizedText.slice(startIndex, endIndex)
   }
 
+  const termRegexes = tokenizedTerms.map((term) => {
+    const lowerTerm = term.toLowerCase()
+    return {
+      lowerTerm,
+      regex: new RegExp(lowerTerm, "gi"),
+    }
+  })
+
   const slice = tokenizedText
     .map((tok) => {
       // see if this tok is prefixed by any search terms
-      for (const searchTok of tokenizedTerms) {
-        if (tok.toLowerCase().includes(searchTok.toLowerCase())) {
-          const regex = new RegExp(searchTok.toLowerCase(), "gi")
+      const lowerTok = tok.toLowerCase()
+      for (const { lowerTerm, regex } of termRegexes) {
+        if (lowerTok.includes(lowerTerm)) {
           return tok.replace(regex, `<span class="highlight">$&</span>`)
         }
       }
@@ -158,10 +166,9 @@ function highlightHTML(searchTerm: string, el: HTMLElement) {
     return span
   }
 
-  const highlightTextNodes = (node: Node, term: string) => {
+  const highlightTextNodes = (node: Node, regex: RegExp) => {
     if (node.nodeType === Node.TEXT_NODE) {
       const nodeText = node.nodeValue ?? ""
-      const regex = new RegExp(term.toLowerCase(), "gi")
       const matches = nodeText.match(regex)
       if (!matches || matches.length === 0) return
       const spanContainer = document.createElement("span")
@@ -176,12 +183,13 @@ function highlightHTML(searchTerm: string, el: HTMLElement) {
       node.parentNode?.replaceChild(spanContainer, node)
     } else if (node.nodeType === Node.ELEMENT_NODE) {
       if ((node as HTMLElement).classList.contains("highlight")) return
-      Array.from(node.childNodes).forEach((child) => highlightTextNodes(child, term))
+      Array.from(node.childNodes).forEach((child) => highlightTextNodes(child, regex))
     }
   }
 
   for (const term of tokenizedTerms) {
-    highlightTextNodes(html.body, term)
+    const regex = new RegExp(term.toLowerCase(), "gi")
+    highlightTextNodes(html.body, regex)
   }
 
   return html.body
