@@ -1,8 +1,11 @@
 import os
-import yfinance as yf
+import re
+import sys  # exit用
 from datetime import datetime
+
 import pytz  # JST判定用に追加
-from crewai import Agent, Task, Crew
+import yfinance as yf
+from crewai import Agent, Crew, Task
 from dotenv import load_dotenv
 import sys  # exit用
 import re
@@ -18,6 +21,9 @@ def main():
     )
     load_dotenv()
     os.environ["GEMINI_API_KEY"] = os.getenv("GOOGLE_API_KEY")
+
+    # Logging setup
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
     # 2. JST時間帯を取得（複数時間実行対応）
     jst = pytz.timezone('Asia/Tokyo')
