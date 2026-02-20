@@ -7,12 +7,17 @@ import pytz  # JST判定用に追加
 import yfinance as yf
 from crewai import Agent, Crew, Task
 from dotenv import load_dotenv
-
+import sys  # exit用
+import re
+import logging
 
 def main():
     # 1. 設定読み込み
     load_dotenv()
     os.environ["GEMINI_API_KEY"] = os.getenv("GOOGLE_API_KEY")
+
+    # Logging setup
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
     # 2. JST時間帯を取得（複数時間実行対応）
     jst = pytz.timezone('Asia/Tokyo')
@@ -29,10 +34,10 @@ def main():
         time_tag = "夜間戦略"
         emphasis = "欧米市場に向けた夜のポイント"
 
-    print(f"--- 実行時間帯: {time_tag} ({jst_hour:02d}:00 JST) ---")
+    logging.info(f"--- 実行時間帯: {time_tag} ({jst_hour:02d}:00 JST) ---")
 
     # 3. 【強化版】データの取得（過去5日分を取得してトレンドを見させる）
-    print("--- 📊 市場データを取得中... ---")
+    logging.info("--- 📊 市場データを取得中... ---")
     try:
         ticker = "JPY=X"
         data = yf.Ticker(ticker)
@@ -58,11 +63,11 @@ def main():
     【直近5日間の終値推移】
     {hist['Close'].to_string()}
     """
-        print(market_data)
+        logging.info(market_data)
 
     except Exception as e:
-        print(f"データ取得エラー: {e}")
-        print("記事生成を中断します。")
+        logging.error(f"データ取得エラー: {e}")
+        logging.info("記事生成を中断します。")
         return 1  # Actionsで失敗扱いにする
 
     # 4. エージェント作成（SEOのプロ人格）
@@ -120,7 +125,7 @@ def main():
     )
 
     # 6. 実行
-    print("--- 🤖 SEO記事を執筆中... ---")
+    logging.info("--- 🤖 SEO記事を執筆中... ---")
     crew = Crew(
         agents=[analyst],
         tasks=[report_task],
@@ -180,11 +185,11 @@ draft: false
         f.write(final_content)
 
     # 保存確認ログ
-    print(f"\n✅ 記事を追加しました！ 保存先: {save_path}")
-    print(f"ファイルサイズ: {os.path.getsize(save_path)} バイト")
-    print("内容の先頭10行:")
+    logging.info(f"✅ 記事を追加しました！ 保存先: {save_path}")
+    logging.info(f"ファイルサイズ: {os.path.getsize(save_path)} バイト")
+    logging.info("内容の先頭10行:")
     with open(save_path, "r", encoding="utf-8") as f:
-        print("".join(f.readlines()[:10]))
+        logging.info("".join(f.readlines()[:10]))
 
     # 🔧 posts/index.md を自動更新（新しい記事をリストに追加）
     posts_index_path = "quartz/content/posts/index.md"
@@ -206,9 +211,9 @@ draft: false
         with open(posts_index_path, "w", encoding="utf-8") as f:
             f.write(posts_content_updated)
 
-        print(f"\n✅ posts/index.md を更新しました")
+        logging.info(f"✅ posts/index.md を更新しました")
     else:
-        print(f"\n⚠️ posts/index.md が見つかりません")
+        logging.warning(f"⚠️ posts/index.md が見つかりません")
     
     return 0
 
